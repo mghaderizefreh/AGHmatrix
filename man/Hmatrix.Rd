@@ -16,7 +16,8 @@ Hmatrix(
   maf = 0,
   ploidy = 2,
   roundVar = 3,
-  ASV = FALSE
+  ASV = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ Hmatrix(
 \item{roundVar}{only used for Munoz's method, how many digits to consider the relationship be of same class, default=2.}
 
 \item{ASV}{if TRUE, transform matrix into average semivariance (ASV) equivalent (K = K / (trace(K) / (nrow(K)-1))). Details formula 2 of Fieldmann et al. (2022). Default = FALSE.}
+
+\item{verbose}{if FALSE, will run silently}
 }
 \value{
 H Matrix with the relationship between the individuals based on pedigree and corrected by molecular information

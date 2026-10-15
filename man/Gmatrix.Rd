@@ -21,7 +21,8 @@ Gmatrix(
   ratio.check = TRUE,
   weights = NULL,
   ploidy.correction = FALSE,
-  ASV = FALSE
+  ASV = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -86,6 +87,8 @@ Default = FALSE.}
 \item{ASV}{if TRUE, transform matrix into average semivariance (ASV) 
 equivalent (K = K / (trace(K) / (nrow(K)-1))). Details formula 2 of 
 Fieldmann et al. (2022). Default = FALSE.}
+
+\item{verbose}{if FALSE, will trun silently}
 }
 \value{
 Matrix with the marker-bases relationships between the individuals

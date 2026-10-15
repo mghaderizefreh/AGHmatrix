@@ -22,6 +22,7 @@
 #'
 #' @param data pedigree data name. Unknown value should be equal 0. See example for construction.
 #' @param fixedParent if false, assumes that all the parents are equally possible parents. If true, assumes that the first parental is known and the others are equally possible parents. Default = FALSE.
+#' @param verbose if false, will run silently
 #' 
 #' @return Matrix with the relationship between the individuals.
 #'
@@ -60,7 +61,7 @@
 #'
 #' @export
 #' 
-AmatrixPolyCross = function(data = NULL, fixedParent=FALSE){
+AmatrixPolyCross = function(data = NULL, fixedParent=FALSE, verbose=TRUE){
   unk = 0
   orig.order <- as.character(data[, 1])
   
@@ -80,7 +81,7 @@ AmatrixPolyCross = function(data = NULL, fixedParent=FALSE){
   }
   
   if (length(data$sire) > 1000) 
-    cat("Processing a large pedigree data... It may take a couple of minutes... \n")
+    if(verbose) cat("Processing a large pedigree data... It may take a couple of minutes... \n")
   
   if(fixedParent==FALSE){
     n <- ncol(Parents)
@@ -93,7 +94,7 @@ AmatrixPolyCross = function(data = NULL, fixedParent=FALSE){
     
     combs = t(unique(t(combs))) #fixing order by number of max parents
     
-    cat("Constructing matrix A using ploidy = 2 \n")
+    if (verbose) cat("Constructing matrix A using ploidy = 2 \n")
     Afinal = matrix(NA,n,n)
     Afinal[1, 1] <- 1
     Acombs <- array(NA, dim=c(n,n,ncol(combs)))
@@ -181,7 +182,7 @@ AmatrixPolyCross = function(data = NULL, fixedParent=FALSE){
   }
   
   Time = as.matrix(proc.time() - Time)
-  cat("Completed! Time =", Time[3]/60, " minutes \n")
+  if(verbose) cat("Completed! Time =", Time[3]/60, " minutes \n")
   rownames(A) <- colnames(A) <- data1$ind_data
   A <- A[orig.order, orig.order]
   return(A)

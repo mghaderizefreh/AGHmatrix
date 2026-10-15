@@ -4,12 +4,14 @@
 \alias{AmatrixPolyCross}
 \title{Construction of pedigree-based relationship matrix with parental guessing possibility}
 \usage{
-AmatrixPolyCross(data = NULL, fixedParent = FALSE)
+AmatrixPolyCross(data = NULL, fixedParent = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{data}{pedigree data name. Unknown value should be equal 0. See example for construction.}
 
 \item{fixedParent}{if false, assumes that all the parents are equally possible parents. If true, assumes that the first parental is known and the others are equally possible parents. Default = FALSE.}
+
+\item{verbose}{if false, will run silently}
 }
 \value{
 Matrix with the relationship between the individuals.

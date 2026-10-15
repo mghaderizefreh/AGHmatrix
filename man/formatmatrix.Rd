@@ -10,7 +10,8 @@ formatmatrix(
   return = FALSE,
   name = deparse(substitute(data)),
   round.by = 12,
-  exclude.0 = TRUE
+  exclude.0 = TRUE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ formatmatrix(
 \item{round.by}{select the number of digits after 0 you want in your data. Default = 12}
 
 \item{exclude.0}{if TRUE, remove all lines equal to zero (ASREML option). Default = TRUE}
+
+\item{verbose}{if FALSE, will run silently}
 }
 \value{
 a object or a csv file with a table with 3 columns representing the matrix.

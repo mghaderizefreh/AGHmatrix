@@ -58,7 +58,7 @@
 #' @param weights vector with weights for each marker. Only works if 
 #' method="VanRaden". Default is a vector of 1's (equal weight).
 #' @param ploidy.correction It sets the denominator (correction) of the 
-#' rossprod. Used only when ploidy > 2 for "VanRaden" and ratio models.
+#' crossprod. Used only when ploidy > 2 for "VanRaden" and ratio models.
 #' If TRUE, it uses the sum of "Ploidy" times "Frequency" times "(1-Frequency)" 
 #' of each marker as method 1 in VanRaden 2008 and Endelman (2018).
 #' When ratio=TRUE, it uses "1/Ploidy" times "Frequency" times "(1-Frequency)". 
@@ -70,6 +70,7 @@
 #' @param ASV if TRUE, transform matrix into average semivariance (ASV) 
 #' equivalent (K = K / (trace(K) / (nrow(K)-1))). Details formula 2 of 
 #' Fieldmann et al. (2022). Default = FALSE.
+#' @param verbose if FALSE, will trun silently
 #' @return Matrix with the marker-bases relationships between the individuals
 #'
 #' @useDynLib AGHmatrix, .registration = TRUE
@@ -142,7 +143,8 @@ Gmatrix <- function(SNPmatrix = NULL,
                     ratio.check = TRUE,
                     weights = NULL, 
                     ploidy.correction = FALSE, 
-                    ASV = FALSE) {
+                    ASV = FALSE,
+                    verbose = TRUE) {
   Time <- proc.time()
   #-----------------------------------------------------------------------------
   # ==== Initial preprocessing ====
@@ -189,7 +191,8 @@ Gmatrix <- function(SNPmatrix = NULL,
       rmv.mono        = rmv.mono,
       thresh.htzy     = thresh.htzy,
       thresh.missing  = thresh.missing,
-      impute.method   = impute.method
+      impute.method   = impute.method,
+      verbose         = verbose
     )
   }
   

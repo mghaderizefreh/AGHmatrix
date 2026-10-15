@@ -23,6 +23,7 @@
 #' @param name name of the csv file to be saved. Default=data name.
 #' @param round.by select the number of digits after 0 you want in your data. Default = 12
 #' @param exclude.0 if TRUE, remove all lines equal to zero (ASREML option). Default = TRUE
+#' @param verbose if FALSE, will run silently
 #' 
 #' @return a object or a csv file with a table with 3 columns representing the matrix.
 #'
@@ -53,12 +54,13 @@ formatmatrix <- function(
     return = FALSE,
     name = deparse(substitute(data)),
     round.by = 12,
-    exclude.0 = TRUE)
+    exclude.0 = TRUE,
+    verbose = TRUE)
     {
   if( is.null(data))
     stop(deparse("Define a matrix data"))
   
-  cat("Converting to column format... \n")
+  if (verbose) cat("Converting to column format... \n")
   
   Time <- proc.time()
   n <- nrow(data)
@@ -78,14 +80,14 @@ formatmatrix <- function(
   
   if(save){
     write.table(columns,file=paste(name,".csv",sep=""),sep=" ",row.names=FALSE,col.names=FALSE)
-    cat(paste("Saved as ",name,".csv"," \n",sep=""))
+    if (verbose) cat(paste("Saved as ",name,".csv"," \n",sep=""))
   }
   
   Time = as.matrix(proc.time()-Time[3])
     
   attr(columns, "rownames") <- rownames(data) #necessary to ingest in asremlr as an R object
   
-  cat("Completed! Time =", Time[3]/60," minutes \n")
+  if (verbose) cat("Completed! Time =", Time[3]/60," minutes \n")
   if(return)
     return( columns )
 }

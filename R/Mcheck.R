@@ -25,6 +25,7 @@
 #' @param thresh.htzy threshold heterozigosity, remove SNPs below this threshold. Default=0.
 #' @param impute.method "mean" to impute the missing data by the mean per marker, "mode" to impute the missing data by the mode per marker, "global.mean" to impute the missing data by the mean across all markers, "global.mode" to impute the missing data my the mode across all marker. Default = "mean".
 #' @param rmv.mono if monomorphic markers should be removed. Default=TRUE.
+#' @param verbose if TRUE, will run silently
 #'
 #' @return SNPmatrix after filtering steps.
 #'
@@ -47,7 +48,8 @@ Mcheck <- function(SNPmatrix = NULL,
                    thresh.missing = 0.9,
                    thresh.htzy = 0, 
                    impute.method = "mean",
-                   rmv.mono = TRUE) {
+                   rmv.mono = TRUE,
+                   verbose = TRUE) {
   
   #-----------------------------------------------------------------------------
   # SNP missing data
@@ -64,17 +66,19 @@ Mcheck <- function(SNPmatrix = NULL,
   #-----------------------------------------------------------------------------
   missing <- colMeans(is.na(SNPmatrix))
   missing.low <- missing <= thresh.missing
-  cat("\nMissing data check: \n")
+  if (verbose) cat("\nMissing data check: \n")
   if (any(missing.low)) {
+    if (verbose){
     cat("\tTotal SNPs:", ncol(SNPmatrix), "\n")
     cat("\t", ncol(SNPmatrix) - sum(missing.low), 
         "SNPs dropped due to missing data threshold of", 
         thresh.missing, "\n")
     cat("\tTotal of:", sum(missing.low), " SNPs \n")
+    }
     idx.rm <- which(missing.low)
     SNPmatrix <- SNPmatrix[, idx.rm, drop = FALSE]
   } else {
-    cat("\tNo SNPs with missing data, missing threshold of =", 
+    if (verbose) cat("\tNo SNPs with missing data, missing threshold of =",
         thresh.missing, "\n")
   }
   
@@ -84,14 +88,16 @@ Mcheck <- function(SNPmatrix = NULL,
   AF <- colMeans(SNPmatrix, na.rm = TRUE) / ploidy
   MAF <- ifelse(AF > 0.5, 1 - AF, AF)
   snps.low <- MAF < thresh.maf
-  cat("\nMAF check: \n")
+  if (verbose) cat("\nMAF check: \n")
   if (any(snps.low)) {
+    if (verbose){
     cat("\t", sum(snps.low), "SNPs dropped with MAF below", thresh.maf, "\n")
     cat("\tTotal:", ncol(SNPmatrix) - sum(snps.low), " SNPs \n")
+    }
     idx.rm <- which(snps.low)
     SNPmatrix <- SNPmatrix[, -idx.rm, drop = FALSE]
   } else {
-    cat("\tNo SNPs with MAF below", thresh.maf, "\n")
+    if (verbose) cat("\tNo SNPs with MAF below", thresh.maf, "\n")
   }
   
   #-----------------------------------------------------------------------------
@@ -100,14 +106,16 @@ Mcheck <- function(SNPmatrix = NULL,
   if (rmv.mono) {
     mono <- matrixStats::colVars(SNPmatrix, na.rm = TRUE) == 0
     mono[is.na(mono)] <- TRUE
-    cat("\nMonomorphic check: \n")
+    if (verbose) cat("\nMonomorphic check: \n")
     if (any(mono)) {
+      if (verbose){
       cat("\t", sum(mono), "monomorphic SNPs \n")
       cat("\tTotal:", ncol(SNPmatrix) - sum(mono), "SNPs \n")
+      }
       idx.rm <- which(mono)
       SNPmatrix <- SNPmatrix[, -idx.rm, drop = FALSE]
     } else {
-      cat("\tNo monomorphic SNPs \n")
+      if (verbose) cat("\tNo monomorphic SNPs \n")
     }
   }
   
@@ -153,26 +161,30 @@ Mcheck <- function(SNPmatrix = NULL,
     colSums(SNPmatrix != 0 & SNPmatrix != ploidy, na.rm = TRUE) / 
     nrow(SNPmatrix)
   htrz.low <- htrz < thresh.htzy
-  cat("\nHeterozigosity data check: \n")
+  if (verbose) cat("\nHeterozigosity data check: \n")
   if (any(htrz.low)) {
+    if (verbose){
     cat("\tTotal SNPs:", ncol(SNPmatrix), "\n")
     cat("\t", ncol(SNPmatrix) - sum(htrz.low), 
         "SNPs dropped due to heterozygosity threshold of", thresh.htzy, "\n")
     cat("\tTotal of:", sum(htrz.low), " SNPs \n")
+    }
     idx.rm <- which(htrz.low)
     SNPmatrix <- SNPmatrix[, idx.rm, drop = FALSE]
   } else {
-    cat("\tNo SNPs with heterozygosity, missing threshold of =", 
+    if (verbose) cat("\tNo SNPs with heterozygosity, missing threshold of =",
         thresh.htzy, "\n")
   }
   
   #-----------------------------------------------------------------------------
   # Summary
   #-----------------------------------------------------------------------------
+  if (verbose){
   cat("\nSummary check: \n")
   cat("\tInitial: ", ncol.init, "SNPs \n")
   cat("\tFinal: ", ncol(SNPmatrix), " SNPs (", ncol.init - ncol(SNPmatrix), 
       " SNPs removed) \n\n")
+  }
   
   return(SNPmatrix)
 }

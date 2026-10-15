@@ -31,6 +31,7 @@
 #' @param omega to be used of Martini's method, default=1.
 #' @param roundVar only used for Munoz's method, how many digits to consider the relationship be of same class, default=2.
 #' @param ASV if TRUE, transform matrix into average semivariance (ASV) equivalent (K = K / (trace(K) / (nrow(K)-1))). Details formula 2 of Fieldmann et al. (2022). Default = FALSE.
+#' @param verbose if FALSE, will run silently
 #' 
 #' @return H Matrix with the relationship between the individuals based on pedigree and corrected by molecular information
 #'
@@ -76,7 +77,8 @@ Hmatrix <- function(A=NULL,
                     maf=0,
                     ploidy=2,
                     roundVar=3,
-                    ASV=FALSE){
+                    ASV=FALSE,
+                    verbose=TRUE){
   #-----------------------------------------------------------------------------
   # pre-checks
   #-----------------------------------------------------------------------------
@@ -106,8 +108,10 @@ Hmatrix <- function(A=NULL,
   Aorig <- A; Gorig <- G
   An <- rownames(Aorig); Gn <- rownames(Gorig)
   
+  if (verbose){
   Time <- proc.time()
   cat("Comparing the matrices... \n")
+  }
   #-----------------------------------------------------------------------------
   # Missing pattern
   #-----------------------------------------------------------------------------
@@ -128,6 +132,7 @@ Hmatrix <- function(A=NULL,
   # keep G on its available IDs
   #-----------------------------------------------------------------------------
   G <- Gorig[Gnhat, Gnhat, drop = FALSE]
+  if(verbose){
   elapsed <- (proc.time() - Time)[["elapsed"]]
   cat("Completed! Time =", elapsed / 60, "minutes\n")
   
@@ -136,6 +141,7 @@ Hmatrix <- function(A=NULL,
   #-----------------------------------------------------------------------------
   cat("Computing the H matrix... \n")
   Time <- proc.time()
+  }
   
   #-----------------------------------------------------------------------------
   # Martini
@@ -185,8 +191,10 @@ Hmatrix <- function(A=NULL,
     attr(H, "ploidy")   <- ploidy
     attr(H, "nmarkers") <- nm
     
+    if (verbose){
     Time <- as.matrix(proc.time()-Time)
     cat("\n","Completed! Time =", Time[3]/60," minutes \n")
+    }
     return(H)
   }
   
@@ -250,9 +258,11 @@ Hmatrix <- function(A=NULL,
     attr(H, "ploidy")   <- ploidy
     attr(H, "nmarkers") <- nm
     
+    if (verbose){
     Time <- as.matrix(proc.time() - Time)
     cat("\n","Completed! Time =", Time[3]/60," minutes \n")
     cat("\n","Returning H = A matrix corrected by G... \n")
+    }
     return(H)
   }
 }
